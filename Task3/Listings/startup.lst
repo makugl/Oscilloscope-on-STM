@@ -1,0 +1,383 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;*******************************************************
+                       ***********************
+    2 00000000         ; Exports & Imports
+    3 00000000         ;*******************************************************
+                       ***********************
+    4 00000000         
+    5 00000000                 IMPORT           __main [CODE]
+    6 00000000                 EXPORT           Reset_Handler
+    7 00000000                 EXPORT           __Vectors
+    8 00000000         
+    9 00000000         
+   10 00000000         ;*******************************************************
+                       ***********************
+   11 00000000         ; Constants
+   12 00000000         ;*******************************************************
+                       ***********************
+   13 00000000         
+   14 00000000 0000010C 
+                       EXT_INT_SIZE
+                               EQU              268         ; 67 Interrupts x 4
+                                                             Bytes = 268 Bytes
+   15 00000000 00000200 
+                       STACK_SIZE
+                               EQU              0x200       ; StackSize (Total 
+                                                            RAM 4096 Bytes)
+   16 00000000         
+   17 00000000         
+   18 00000000         ;*******************************************************
+                       ***********************
+   19 00000000         ; Data Area: Stack
+   20 00000000         ;*******************************************************
+                       ***********************
+   21 00000000         
+   22 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
+=3
+   23 00000000         Stack_Mem
+                               SPACE            STACK_SIZE
+   24 00000200         __initial_sp                         ; This label define
+                                                            s the initial stack
+                                                             pointer
+   25 00000200         
+   26 00000200         
+   27 00000200         ;*******************************************************
+                       ***********************
+   28 00000200         ; Data Area: Vector Table
+   29 00000200         ;*******************************************************
+                       ***********************
+   30 00000200         
+   31 00000200                 AREA             VectorTable, DATA, READONLY, AL
+IGN=3
+   32 00000000         __Vectors
+   33 00000000 00000000        DCD              __initial_sp ; Top of Stack
+   34 00000004 00000000        DCD              Reset_Handler ; Reset Handler
+   35 00000008 00000000        DCD              NMI_Handler ; NMI Handler
+   36 0000000C 00000000        DCD              HardFault_Handler ; Hard Fault 
+                                                            Handler
+   37 00000010 00000000        DCD              0           ; Reserved
+   38 00000014 00000000        DCD              0           ; Reserved
+   39 00000018 00000000        DCD              0           ; Reserved
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   40 0000001C 00000000        DCD              0           ; Reserved
+   41 00000020 00000000        DCD              0           ; Reserved
+   42 00000024 00000000        DCD              0           ; Reserved
+   43 00000028 00000000        DCD              0           ; Reserved
+   44 0000002C 00000000        DCD              SVC_Handler ; SVCall Handler
+   45 00000030 00000000        DCD              0           ; Reserved
+   46 00000034 00000000        DCD              0           ; Reserved
+   47 00000038 00000000        DCD              PendSV_Handler ; PendSV Handler
+                                                            
+   48 0000003C 00000000        DCD              SysTick_Handler 
+                                                            ; SysTick Handler
+   49 00000040 00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00               SPACE            EXT_INT_SIZE ; External Interru
+                                                            pts
+   50 0000014C         
+   51 0000014C         
+   52 0000014C         ;*******************************************************
+                       ***********************
+   53 0000014C         ; Code Area: Default Handlers
+   54 0000014C         ;*******************************************************
+                       ***********************
+   55 0000014C         
+   56 0000014C                 AREA             Startup, CODE, READONLY
+   57 00000000         
+   58 00000000         Reset_Handler
+                               PROC
+   59 00000000                 ENTRY
+   60 00000000 4801            LDR              R0, =__main
+   61 00000002 4700            BX               R0
+   62 00000004                 ENDP
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+   63 00000004         
+   64 00000004         HardFault_Handler
+   65 00000004         SVC_Handler
+   66 00000004         PendSV_Handler
+   67 00000004         SysTick_Handler
+   68 00000004         NMI_Handler
+                               PROC
+   69 00000004 E7FE            B                .
+   70 00000006                 ENDP
+   71 00000006         
+   72 00000006         
+   73 00000006         ;*******************************************************
+                       ***********************
+   74 00000006         ; End of File
+   75 00000006         ;*******************************************************
+                       ***********************
+   76 00000006 00 00           ALIGN
+   77 00000008                 END
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
+ork --depend=.\objects\startup.d -o.\objects\startup.o -I.\RTE\_Apus_Board -IC:
+\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\In
+clude -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="_
+_UVISION_VERSION SETA 525" --predefine="STM32F072xB SETA 1" --list=.\listings\s
+tartup.lst startup.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+STACK 00000000
+
+Symbol: STACK
+   Definitions
+      At line 22 in file startup.s
+   Uses
+      None
+Comment: STACK unused
+Stack_Mem 00000000
+
+Symbol: Stack_Mem
+   Definitions
+      At line 23 in file startup.s
+   Uses
+      None
+Comment: Stack_Mem unused
+__initial_sp 00000200
+
+Symbol: __initial_sp
+   Definitions
+      At line 24 in file startup.s
+   Uses
+      At line 33 in file startup.s
+Comment: __initial_sp used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+VectorTable 00000000
+
+Symbol: VectorTable
+   Definitions
+      At line 31 in file startup.s
+   Uses
+      None
+Comment: VectorTable unused
+__Vectors 00000000
+
+Symbol: __Vectors
+   Definitions
+      At line 32 in file startup.s
+   Uses
+      At line 7 in file startup.s
+Comment: __Vectors used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+HardFault_Handler 00000004
+
+Symbol: HardFault_Handler
+   Definitions
+      At line 64 in file startup.s
+   Uses
+      At line 36 in file startup.s
+Comment: HardFault_Handler used once
+NMI_Handler 00000004
+
+Symbol: NMI_Handler
+   Definitions
+      At line 68 in file startup.s
+   Uses
+      At line 35 in file startup.s
+Comment: NMI_Handler used once
+PendSV_Handler 00000004
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 66 in file startup.s
+   Uses
+      At line 47 in file startup.s
+Comment: PendSV_Handler used once
+Reset_Handler 00000000
+
+Symbol: Reset_Handler
+   Definitions
+      At line 58 in file startup.s
+   Uses
+      At line 6 in file startup.s
+      At line 34 in file startup.s
+
+SVC_Handler 00000004
+
+Symbol: SVC_Handler
+   Definitions
+      At line 65 in file startup.s
+   Uses
+      At line 44 in file startup.s
+Comment: SVC_Handler used once
+Startup 00000000
+
+Symbol: Startup
+   Definitions
+      At line 56 in file startup.s
+   Uses
+      None
+Comment: Startup unused
+SysTick_Handler 00000004
+
+Symbol: SysTick_Handler
+   Definitions
+      At line 67 in file startup.s
+   Uses
+      At line 48 in file startup.s
+Comment: SysTick_Handler used once
+7 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+EXT_INT_SIZE 0000010C
+
+Symbol: EXT_INT_SIZE
+   Definitions
+      At line 14 in file startup.s
+   Uses
+      At line 49 in file startup.s
+Comment: EXT_INT_SIZE used once
+STACK_SIZE 00000200
+
+Symbol: STACK_SIZE
+   Definitions
+      At line 15 in file startup.s
+   Uses
+      At line 23 in file startup.s
+Comment: STACK_SIZE used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+__main 00000000
+
+Symbol: __main
+   Definitions
+      At line 5 in file startup.s
+   Uses
+      At line 60 in file startup.s
+Comment: __main used once
+1 symbol
+350 symbols in table
